@@ -1,0 +1,659 @@
+.admin-body {
+    background-color: #f0f4f8;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+  }
+  
+  /* Navigation */
+  .admin-nav {
+    background: white;
+    display: flex;
+    padding: 0 40px;
+    height: 60px;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .nav-logo { font-weight: 800; margin-right: 40px; color: #555; }
+  
+  .nav-tabs button {
+    background: none;
+    border: none;
+    padding: 20px;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+  }
+  
+  .nav-tabs button.active {
+    color: #36A2EB;
+    background: #eef7ff;
+    border-bottom: 3px solid #36A2EB;
+  }
+  
+  /* Layout */
+  .dashboard-content {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .top-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 0.5fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  /* Stats Cards */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  .stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+  
+  .stat-info p { font-size: 14px; color: #777; margin: 0; }
+  .stat-info h3 { font-size: 24px; margin: 5px 0 0; }
+  
+  .stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  
+  .blue { background: #eef7ff; color: #36A2EB; }
+  .blue-light { background: #f0f4ff; color: #5d87ff; }
+  .clock { background: #f0f4ff; color: #36A2EB; }
+  .check { background: #e7f3ff; color: #36A2EB; }
+  
+  /* Image Box */
+  .preview-card {
+    background: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    text-align: left;
+  }
+  
+  .card-label { font-size: 11px; font-weight: 700; color: #999; margin-bottom: 10px; }
+  
+  .image-container {
+    width: 100%;
+    height: 150px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .image-container img { width: 100%; height: 100%; object-fit: contain; }
+  
+  /* Status Indicator */
+  .status-card {
+    background: white;
+    padding: 20px;
+    border-radius: 50px; /* Oval shape from image */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: fit-content;
+  }
+  
+  .status-tag {
+    display: block;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 4px 12px;
+    border-radius: 10px;
+    margin-top: 5px;
+  }
+  
+  .online { background: #d4edda; color: #155724; }
+  .offline { background: #f8d7da; color: #721c24; }
+  
+  /* --- Add these below your .offline style --- */
+
+.side-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Creates the space between the capsule and the button */
+  }
+  
+  .reset-stats-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 15px; /* Matches the curve of your stat cards */
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.2);
+    transition: all 0.2s ease;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .reset-stats-btn:hover {
+    background: #e60000;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 77, 77, 0.4);
+  }
+  
+  /* Chart Section */
+  .chart-section {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    text-align: center;
+  }
+  
+  .admin-pie-container { height: 300px; margin: 20px 0; }
+  
+  .view-details-btn {
+    background: #007bff;
+    color: white;
+    padding: 12px 60px;
+    border-radius: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+  }
+  
+/* --- Modal Table Fix --- */
+.admin-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10000;
+  }
+  
+  .admin-modal-content {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 20px;
+    max-height: 85vh; /* Increased slightly for better view */
+    display: flex; /* Added flex to separate header from table */
+    flex-direction: column;
+    overflow: hidden; /* Stops the whole box from scrolling */
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  
+  .modal-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 30px; /* Kept your 30px padding */
+    background: white;
+    border-bottom: 1px solid #eee;
+    z-index: 10;
+  }
+  
+  /* This is the secret: Only the table wrapper scrolls now */
+  .table-wrapper {
+    padding: 0 30px 30px 30px; /* Kept your 30px padding */
+    overflow-y: auto; 
+    flex-grow: 1;
+  }
+  
+  /* Added styling for the X button to make it look clean */
+  .close-modal {
+    background: #f0f2f5;
+    border: none;
+    font-size: 24px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    transition: all 0.2s;
+  }
+  
+  .close-modal:hover {
+    background: #ffebeb;
+    color: #ff4d4d;
+    transform: scale(1.1);
+  }
+  
+  table { width: 100%; border-collapse: collapse; }
+  th { 
+    text-align: left; 
+    padding: 12px; 
+    background: #f8f9fa; 
+    color: #666; 
+    position: sticky; /* Optional: keeps table headers visible too */
+    top: 0;
+  }
+  td { padding: 12px; border-bottom: 1px solid #eee; }
+  
+/* Mood Badge Colors for Detail Table */
+.mood-badge { 
+    padding: 4px 8px; 
+    border-radius: 4px; 
+    font-size: 11px; 
+    font-weight: bold; 
+    text-transform: uppercase;
+  }
+  
+  /* Original colors */
+  .mood-badge.happy { background: #d4edda; color: #155724; }
+  .mood-badge.sad { background: #f8d7da; color: #721c24; }
+  
+  /* New mood colors */
+  .mood-badge.bored { background: #e2e3e5; color: #383d41; }      /* Grey */
+  .mood-badge.energetic { background: #e1f5fe; color: #01579b; }  /* Yellow/Gold */
+  .mood-badge.anxious { background: #fff3cd; color: #856404; }    /* Light Blue */
+  .mood-badge.calm { background: #d1ecf1; color: #0c5460; }       /* Teal */
+  .mood-badge.mad { background: #ff4d4d; color: white; }         /* Bright Red */
+  .mood-badge.missing { background: #f3e5f5; color: #7b1fa2; }    /* Purple */
+
+  /* --- Filter Section Styles --- */
+.filter-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.filter-toggle-btn {
+  background: #f0f2f5;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: 45px;
+  right: 50px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  padding: 10px;
+  z-index: 100;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-dropdown button {
+  text-align: left;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #444;
+}
+
+.filter-dropdown button:hover {
+  background: #f0f7ff;
+  color: #007bff;
+}
+
+.mood-submenu {
+  position: absolute;
+  left: -140px;
+  top: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.date-filter-input {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  border-top: 1px solid #eee;
+}
+
+.date-filter-input input {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+}
+
+.active-filter-badge {
+  font-size: 11px;
+  background: #eef7ff;
+  color: #36A2EB;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+.clear-btn {
+  border-top: 1px solid #eee !important;
+  color: #ff4d4d !important;
+  font-weight: bold;
+}
+
+/* --- Response Page Layout --- */
+.response-content {
+  padding: 30px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.response-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr 220px; /* Three column layout */
+  gap: 30px;
+  align-items: start;
+}
+
+/* Image Selection Grid (Indices 0-5) */
+.image-selection-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.selectable-img-box {
+  background: white;
+  border-radius: 15px;
+  padding: 10px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.selectable-img-box.selected {
+  border-color: #36A2EB;
+  transform: scale(1.02);
+}
+
+.selectable-img-box img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Message Input Area */
+.message-container {
+  height: 100%;
+}
+
+.message-card {
+  background: #eef7ff; /* Matching design tint */
+  padding: 25px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.message-card textarea {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  font-family: inherit;
+  resize: none;
+  font-size: 15px;
+}
+
+.send-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.send-btn:hover { opacity: 0.9; }
+
+/* Sidebar & Quick Actions */
+.response-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.status-card-v2 {
+  background: white;
+  padding: 20px;
+  border-radius: 35px; /* Oval shape from image_a4907f.jpg */
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.status-card-v2 p {
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.action-btn {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.action-btn:active { transform: scale(0.98); }
+.action-btn.kiss { background: #007bff; }
+.action-btn.missing { background: #36A2EB; }
+
+/* --- UI/UX Improvements: Hover Effects --- */
+
+.nav-tabs button:hover {
+  color: #36A2EB;
+  background: #f8fbff;
+}
+
+.view-details-btn:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.send-btn:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+.action-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* Specific Style for Reset Button*/
+.action-btn.reset {
+  background: #6c757d; /* Grey color to differentiate from primary actions */
+}
+
+.action-btn.reset:hover {
+  background: #5a6268;
+}
+
+/* Improved Modal Close Button*/
+.close-modal:hover {
+  background: #ffebeb;
+  color: #ff4d4d;
+  transform: rotate(90deg);
+}
+
+/* Transition for all interactive elements*/
+button, .selectable-img-box {
+  transition: all 0.2s ease-in-out;
+}
+
+/* --- Add these to your existing Admin.css --- */
+
+.clear-btn-persistent {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-btn-persistent:hover {
+  background: #e60000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3);
+}
+
+/* Ensure the date input reflects the selected state clearly */
+.date-filter-input input:focus {
+  outline: none;
+  border-color: #36A2EB;
+  box-shadow: 0 0 5px rgba(54, 162, 235, 0.2);
+}
+
+/* Adjusted dropdown to ensure it doesn't hide behind the table */
+.filter-dropdown {
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* Smooth transition for active badges */
+.active-filter-badge {
+  transition: opacity 0.3s ease;
+}
+
+/* --- Updated Filter Button Styles --- */
+.clear-btn-persistent {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-btn-persistent:hover {
+  background: #ff4d4d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 77, 77, 0.3);
+}
+
+/* Ensure the submenu doesn't overlap awkwardly */
+.mood-submenu {
+  position: absolute;
+  left: -160px;
+  top: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  padding: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 110;
+}
+
+/* Container to manage the height and transition */
+.image-selection-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  overflow: hidden; /* Important for the slide effect */
+  transition: max-height 0.5s ease-in-out; /* Smooth slide animation */
+}
+
+/* Collapsed state: shows roughly the first 2-4 images */
+.image-selection-grid.collapsed {
+  max-height: 300px; 
+}
+
+/* Expanded state: allows the grid to grow to its full content */
+.image-selection-grid.expanded {
+  max-height: 1000px; /* Adjust based on your total image count */
+}
+
+/* The Toggle Button Style */
+.expand-toggle-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  background: #f0f4f8;
+  border: 1px dashed #36A2EB;
+  color: #36A2EB;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.expand-toggle-btn:hover {
+  background: #eef7ff;
+  transform: translateY(2px);
+}
+
+/* Styling to match the Admin Nav Tabs[cite: 24] */
+.admin-logout-tab {
+  background: transparent;
+  color: #ff4d4d;
+  border: 1px solid #ff4d4d;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-left: 20px; /* Separates it from the navigation tabs[cite: 24] */
+  transition: all 0.2s ease;
+}
+
+.admin-logout-tab:hover {
+  background: #ff4d4d;
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.2);
+}

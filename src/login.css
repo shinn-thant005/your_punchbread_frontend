@@ -1,0 +1,67 @@
+.login-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Use your existing app background or a nice gradient */
+    background: radial-gradient(circle at top right, #fff5f7, #f0f4ff);
+  }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    padding: 50px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    text-align: center;
+  }
+  
+  .glass-card h2 {
+    color: #2d3436;
+    font-weight: 800;
+    margin-bottom: 30px;
+    font-size: 2rem;
+  }
+  
+  .input-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+  }
+  
+  .input-group input:focus {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: #ff85a2;
+  }
+  
+  .login-btn {
+    width: 100%;
+    padding: 15px;
+    background: #ff85a2;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 133, 162, 0.3);
+    transition: transform 0.2s;
+  }
+  
+  .login-btn:hover {
+    transform: translateY(-2px);
+    background: #ff7091;
+  }

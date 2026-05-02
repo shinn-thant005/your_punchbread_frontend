@@ -1,0 +1,414 @@
+:root {
+  --primary-pink: #ff85a2;
+  --primary-red: #ff4d4d;
+  --accent-blue: #36A2EB;
+  --bg-color: #fcfaff;
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.app-container {
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  padding: 20px;
+  
+  /* --- Background Image Settings --- */
+  background-image: url('background2.png'); /* Replace with your image path */
+  background-size: cover;      /* Ensures the image covers the whole screen */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Optional: keeps the background static while scrolling */
+  
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* --- Content Positioning --- */
+h1 {
+  font-weight: 800;
+  color: #2d3436;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 2.2rem;
+}
+
+.character-stage {
+  position: relative;
+  margin: 5px auto 0;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.main-character {
+  width: 320px;
+  border-radius: 30px;
+  transition: transform 0.3s ease;
+}
+
+/* --- Admin Response Popup (THE FIX) --- */
+.admin-floating-box {
+  position: fixed; /* Takes it out of the layout flow */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centers it perfectly */
+  background: white;
+  padding: 25px;
+  border-radius: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  z-index: 10001; /* Higher than everything else */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 350px; /* Keeps the box small */
+  border: 1px solid rgba(0,0,0,0.05);
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.admin-floating-box img {
+  width: 100%;
+  max-width: 250px; /* Forces the image to stay small */
+  height: auto;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  object-fit: contain;
+}
+
+.speech-bubble {
+  background: #f0f4ff;
+  padding: 15px 20px;
+  border-radius: 18px;
+  font-weight: 700;
+  color: #2d3436;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  position: relative;
+}
+
+.close-overlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #f0f0f0;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-overlay:hover {
+  background: var(--primary-red);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* --- Floating Elements --- */
+.random-message-cloud {
+  background: white;
+  padding: 15px 25px;
+  border-radius: 25px;
+  box-shadow: var(--shadow);
+  font-weight: 700;
+  margin-bottom: 300px;
+  position: absolute;
+  border: 2px solid #f0f0f0;
+  z-index: 5;
+  max-width: 240px;
+}
+
+.random-message-cloud::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+}
+
+/* --- UI Controls --- */
+.top-left-controls {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 100;
+}
+
+.mood-selector-container {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+}
+
+/* --- Buttons Styling & Hover Effects --- */
+button {
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  border: none;
+}
+
+.history-trigger-btn {
+  padding: 10px 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(54, 162, 235, 0.3);
+  border-radius: 14px;
+  font-weight: 700;
+  color: var(--accent-blue);
+  box-shadow: var(--shadow);
+}
+
+.history-trigger-btn:hover {
+  transform: scale(1.05);
+  background: white;
+  border-color: var(--accent-blue);
+}
+
+.music-toggle-btn {
+  padding: 8px 16px;
+  background: #eee;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #666;
+}
+
+.music-toggle-btn:hover { transform: scale(1.05); background: #e0e0e0; }
+
+.music-toggle-btn.playing {
+  background: #e1f5fe;
+  color: var(--accent-blue);
+  animation: pulse 2s infinite;
+}
+
+.mood-icon-btn {
+  background: white;
+  border: 3px solid var(--primary-pink);
+  border-radius: 50%;
+  width: 55px;
+  height: 55px;
+  font-size: 26px;
+  box-shadow: var(--shadow);
+}
+
+.mood-icon-btn:hover { transform: scale(1.1); background: var(--primary-pink); color: white; }
+
+.mad-btn, .missing-btn {
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  width: 110px;
+}
+
+.mad-btn { background: var(--primary-red); box-shadow: 0 4px #c0392b; }
+.mad-btn:hover { transform: translateY(-2px) scale(1.05); background: #ff5e5e; }
+
+.missing-btn { background: #9b59b6; box-shadow: 0 4px #8e44ad; }
+.missing-btn:hover { transform: translateY(-2px) scale(1.05); background: #a569bd; }
+
+.actions {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  position: relative;
+  z-index: 10;
+}
+
+.punch-btn, .kiss-btn {
+  padding: 16px 40px;
+  font-size: 18px;
+  font-weight: 900;
+  border-radius: 18px;
+  color: white;
+  text-transform: uppercase;
+}
+
+.punch-btn { background: var(--primary-red); box-shadow: 0 6px #c0392b; }
+.punch-btn:hover { transform: translateY(-3px) scale(1.05); background: #ff3333; }
+
+.kiss-btn { background: var(--primary-pink); box-shadow: 0 6px #e84393; }
+.kiss-btn:hover { transform: translateY(-3px) scale(1.05); background: #ff99b1; }
+
+button:active { transform: translateY(4px); box-shadow: 0 0px transparent !important; }
+
+/* --- Dropdown Menu --- */
+.mood-dropdown {
+  position: absolute;
+  top: 70px;
+  right: 0;
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+  padding: 15px;
+  width: 200px;
+  z-index: 101;
+  border: 1px solid #f0f0f0;
+  animation: slideDown 0.3s ease-out;
+}
+
+.mood-options button {
+  background: #f8f9fa;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  width: 100%;
+}
+
+.mood-options button:hover {
+  background: #f0f4ff;
+  color: var(--accent-blue);
+  transform: scale(1.03);
+}
+
+.mood-input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.mood-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* --- History Overlay --- */
+.history-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(15px);
+  z-index: 9999 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.history-content {
+  background: white;
+  border-radius: 30px;
+  padding: 40px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  position: relative;
+  transform: none !important; 
+}
+
+.chart-container {
+  height: 250px;
+  margin-top: 20px;
+}
+
+.close-history {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  background: none;
+  color: #ccc;
+}
+
+.close-history:hover { color: var(--primary-red); transform: scale(1.2); }
+
+/* --- Animations --- */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: translate(-50%, -45%) scale(0.9); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(54, 162, 235, 0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(54, 162, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(54, 162, 235, 0); }
+}
+
+/* Styling for the new button row */
+.bottom-row-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Container for the control buttons to keep them organized */
+.top-left-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Enhanced Glassmorphism Logout Button */
+.app-container .logout-btn {
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.4); /* More transparent for better glass effect */
+  backdrop-filter: blur(12px); /* Stronger blur for a high-end feel */
+  -webkit-backdrop-filter: blur(12px);
+  
+  /* Use your theme's red with very low opacity for the border */
+  border: 1px solid rgba(255, 77, 77, 0.25); 
+  border-radius: 16px; /* Softer, rounder corners */
+  
+  font-weight: 700;
+  color: #ff4d4d;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  /* Smooth out all transitions[cite: 30] */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+}
+
+/* Elegant Hover State[cite: 30] */
+.app-container .logout-btn:hover {
+  background: rgba(255, 77, 77, 0.9); /* Fill with red on hover[cite: 30] */
+  color: white;
+  border-color: #ff4d4d;
+  transform: translateY(-2px); /* Slight lift instead of just scaling[cite: 30] */
+  box-shadow: 0 8px 20px rgba(255, 77, 77, 0.3); /* Glowing red shadow[cite: 30] */
+}
+
+/* Tactile Click Effect[cite: 30] */
+.app-container .logout-btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 2px 8px rgba(255, 77, 77, 0.2);
+}
