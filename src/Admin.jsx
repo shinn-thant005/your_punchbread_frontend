@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from './api';
 import './Admin.css';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
@@ -17,15 +17,18 @@ function Admin({ onLogout }) {
   const [moodHistory, setMoodHistory] = useState([]);
   const [showDetails, setShowDetails] = useState(false);
 
-  // Filter States[cite: 16]
+  // Filter States
   const [filterType, setFilterType] = useState('all');
   const [filterValue, setFilterValue] = useState(null);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [showMoodList, setShowMoodList] = useState(false);
 
-  // Response Page States[cite: 16]
+  // Response Page States
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
   const [responseMessage, setResponseMessage] = useState("");
+  
+  // Ref to ensure we only pre-fill the response input once upon loading
+  const hasLoadedResponse = useRef(false);
 
   const moods = ["HAPPY", "SAD", "BORED", "ENERGETIC", "ANXIOUS", "CALM", "MAD", "MISSING"];
 
@@ -59,47 +62,57 @@ function Admin({ onLogout }) {
     }
 
     try {
-      let historyUrl = '/get-all-moods';
+      // Corrected API paths to include /api/v1 prefix
+      let historyUrl = '/api/v1/get-all-moods';
       if (filterType === 'mood' && filterValue) {
-        historyUrl = `/get-moods-type/${filterValue}`;
+        historyUrl = `/api/v1/get-moods-type/${filterValue}`;
       } else if (filterType === 'date' && filterValue) {
-        historyUrl = `/get-moods-date/${filterValue}`;
+        historyUrl = `/api/v1/get-moods-date/${filterValue}`;
       }
 
-      const [kW, kT, pW, pT, status, stats30, history] = await Promise.all([
-        api.get('/get-total-kiss-week'),
-        api.get('/get-total-kiss'),
-        api.get('/get-total-punch-week'),
-        api.get('/get-total-punch'),
-        api.get('/status'),
-        api.get('/stats-30-days'),
+      // Replaced the 6 separate stat calls with 1 call to your new AdminDashboardDTO
+      const [dashboardRes, historyRes] = await Promise.all([
+        api.get(`/api/v1/dashboard/admin?t=${new Date().getTime()}`),
         api.get(historyUrl)
       ]);
 
+      const data = dashboardRes.data;
+
       setStats({
-        kissWeek: kW.data, kissTotal: kT.data,
-        punchWeek: pW.data, punchTotal: pT.data
+        kissWeek: data.weekKissee || 0,  // Note: Matching the typo "weekKissee" from AdminDashboardDTO.java
+        kissTotal: data.totalKisses || 0,
+        punchWeek: data.weekPunches || 0,
+        punchTotal: data.totalPunches || 0
       });
-      setUserImage(status.data);
-      setMoodStats(stats30.data);
-      setMoodHistory(history.data);
+      
+      setUserImage(data.currentPhotoIndex ?? 10);
+      setMoodStats(data.moodStatistics || {});
+      setMoodHistory(historyRes.data || []);
       setIsOnline(true); 
+
+      // Pre-fill the Response Editor with the active message from DB[cite: 17]
+      if (data.currentResponse && !hasLoadedResponse.current) {
+        setResponseMessage(data.currentResponse.responseMessage === "No active message" ? "" : data.currentResponse.responseMessage);
+        setSelectedPhotoIndex(data.currentResponse.responsePhotoIndex || 0);
+        hasLoadedResponse.current = true;
+      }
+
     } catch (err) {
       setIsOnline(false); 
       
-      // MOVE THIS INSIDE THE CATCH BLOCK[cite: 19]
       if (err.response && err.response.status === 401) {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user_role');
-        onLogout(); // Optionally trigger a logout if the session is dead
+        onLogout(); 
       }
     }
   };
 
+  // Fixed Paths: Added the required /api/v1 prefix to all action endpoints
   const handleResetStats = async () => {
     if (!window.confirm("Are you sure you want to reset ALL stats?")) return;
     try {
-      await api.post('/response/reset-all-stats'); 
+      await api.post('/api/v1/response/reset-all-stats'); 
       alert("All stats have been successfully reset.");
       fetchAllData();
     } catch (err) { alert("Failed to reset stats."); }
@@ -107,8 +120,10 @@ function Admin({ onLogout }) {
 
   const handleResetResponse = async () => {
     try {
-      await api.delete('response/delete');
+      await api.delete('/api/v1/response/delete');
       alert("Response reset successfully!");
+      setResponseMessage("");
+      fetchAllData();
     } catch (err) {
       alert("Failed to reset response.");
     }
@@ -116,17 +131,17 @@ function Admin({ onLogout }) {
 
   const handleUpdateResponse = async (index, message) => {
     try {
-      await api.post('/response/update', {
+      await api.post('/api/v1/response/update', {
         responsePhotoIndex: index,
         responseMessage: message
       });
       alert("Response updated!");
+      fetchAllData();
     } catch (err) {
       alert("Update failed.");
     }
   };
 
-  // Fixed toggleFilter: Submenu and Main menu now close on selection[cite: 16]
   const toggleFilter = (type, value) => {
     if (type === 'all') {
       setFilterType('all');
@@ -136,8 +151,8 @@ function Admin({ onLogout }) {
     } else {
       setFilterType(type);
       setFilterValue(value);
-      setShowFilterMenu(false); // Closes main menu
-      setShowMoodList(false);   // Closes mood submenu
+      setShowFilterMenu(false); 
+      setShowMoodList(false);   
     }
   };
 
@@ -145,7 +160,7 @@ function Admin({ onLogout }) {
     labels: Object.keys(moodStats),
     datasets: [{
       data: Object.values(moodStats),
-      backgroundColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#FFCE56', '#9966FF', '#FF9F40'],
+      backgroundColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#FFCE56', '#9966FF', '#FF9F40', '#C9CBCF', '#8BC34A'],
     }]
   };
 
@@ -173,7 +188,7 @@ function Admin({ onLogout }) {
             <div className="preview-card">
               <p className="card-label">CURRENT VIEW</p>
               <div className="image-container">
-                <img src={`/character/${userImage}.png`} alt="Character" />
+                <img src={`/character/${userImage}.webp`} alt="Character" />
               </div>
             </div>
 
@@ -207,7 +222,7 @@ function Admin({ onLogout }) {
                   className={`selectable-img-box ${selectedPhotoIndex === idx ? 'selected' : ''}`} 
                   onClick={() => setSelectedPhotoIndex(idx)}
                 >
-                  <img src={`/admin/${idx}.png`} alt={`Option ${idx}`} />
+                  <img src={`/admin/${idx}.webp`} alt={`Option ${idx}`} />
                 </div>
               ))}
             </div>
@@ -251,7 +266,6 @@ function Admin({ onLogout }) {
               </div>
               
               <div className="filter-section">
-                {/* Clear Filter button only appears when a filter is chosen[cite: 16] */}
                 {filterType !== 'all' && (
                   <button className="clear-btn-persistent" onClick={() => toggleFilter('all', null)}>
                     Clear Filter ✕

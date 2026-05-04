@@ -15,12 +15,14 @@ function Login({ onLoginSuccess }) {
     const credentials = btoa(`${username}:${password}`);
     
     try {
-      const response = await api.get('/status', {
+      // 1. Point to the correct, updated path we created earlier
+      // Added the cache buster ?t= so the browser doesn't use old login attempts
+      const response = await api.get(`/api/v1/dashboard?t=${new Date().getTime()}`, {
         headers: { 'Authorization': `Basic ${credentials}` }
       });
 
       if (response.status === 200) {
-        // ONLY log in if the server says OK[cite: 21]
+        // ONLY log in if the server says OK
         const role = username === 'shinn' ? 'ROLE_ADMIN' : 'ROLE_USER';
         localStorage.setItem('auth_token', credentials);
         localStorage.setItem('user_role', role);

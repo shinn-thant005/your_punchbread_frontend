@@ -2,7 +2,9 @@ import axios from 'axios';
 
 // This is the bridge to your Spring Boot backend
 const api = axios.create({
-  baseURL: 'https://your-punchbread-backend.onrender.com/api/v1',
+  baseURL: window.location.hostname === 'localhost'
+  ? 'http://localhost:8080'
+  :'https://your-punchbread-backend.onrender.com/api/v1',
 });
 
 // --- Authentication Interceptor ---
