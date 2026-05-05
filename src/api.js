@@ -4,7 +4,7 @@ import axios from 'axios';
 const api = axios.create({
   baseURL: window.location.hostname === 'localhost'
   ? 'http://localhost:8080'
-  :'https://your-punchbread-backend.onrender.com',
+  :'your-punchbread-production.up.railway.app',
 });
 
 // --- Authentication Interceptor ---
