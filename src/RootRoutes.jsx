@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import App from './App';
 import Admin from './Admin';
 import Login from './login';
@@ -41,6 +42,7 @@ function RootRoutes() {
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <Analytics />
     </BrowserRouter>
   );
 }
